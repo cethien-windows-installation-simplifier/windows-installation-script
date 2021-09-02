@@ -3,6 +3,12 @@ rem Script to install some Essential Software in windows
 rem EarTrumpet
 winget install -e --id File-New-Project.EarTrumpet
 
+rem ModernFlyouts
+winget install -e --id ModernFlyouts.ModernFlyouts
+
+rem Windows Terminal
+winget install -e --id Microsoft.WindowsTerminal
+
 rem 7Zip
 winget install -e --id 7zip.7zip
 
@@ -23,3 +29,12 @@ winget install -e --id Adobe.AdobeAcrobatReaderDC
 
 rem Java
 winget install -e --id AdoptOpenJDK.OpenJDK.16
+
+rem Thunderbid beta
+winget install -e --id Mozilla.ThunderbirdBeta
+
+rem Rainmeter
+winget install Rainmeter
+
+rem Bulk Rename Utility
+winget install -e --id TGRMNSoftware.BulkRenameUtility
