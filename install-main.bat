@@ -12,8 +12,8 @@ winget install -e --id Microsoft.WindowsTerminal
 rem 7Zip
 winget install -e --id 7zip.7zip
 
-rem Google Chrome
-winget install -e --id Google.Chrome
+rem Firefox
+winget install -e --id Mozilla.Firefox
 
 rem Discord
 winget install -e --id Discord.Discord
