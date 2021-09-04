@@ -1,5 +1,8 @@
 rem Script to install some Essential Software in windows
 
+rem Git
+winget install -e --id Git.Git
+
 rem Windows Terminal
 winget install -e --id Microsoft.WindowsTerminal
 
