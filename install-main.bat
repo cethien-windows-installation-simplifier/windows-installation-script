@@ -38,9 +38,3 @@ winget install -e --id TGRMNSoftware.BulkRenameUtility
 
 rem EarTrumpet
 winget install -e --id File-New-Project.EarTrumpet
-
-rem ModernFlyouts
-winget install -e --id ModernFlyouts.ModernFlyouts
-
-rem Rainmeter
-winget install Rainmeter
