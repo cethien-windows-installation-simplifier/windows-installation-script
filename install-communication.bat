@@ -3,5 +3,8 @@ rem Communication
 rem Teamspeak
 winget install -e --id TeamSpeakSystems.TeamSpeakClient
 
-rem Whatsapp Tray
+rem WhatsApp
+winget install -e --id WhatsApp.WhatsApp
+
+rem WhatsApp Tray
 start "" "https://github.com/D4koon/WhatsappTray/releases"
