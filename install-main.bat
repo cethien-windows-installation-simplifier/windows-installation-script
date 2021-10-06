@@ -14,12 +14,6 @@ winget install -e --id AdoptOpenJDK.OpenJDK.16
 rem Firefox
 winget install -e --id Mozilla.Firefox
 
-rem EarTrumpet
-winget install -e --id File-New-Project.EarTrumpet
-
-rem VoiceMeeterPotato
-winget install -e --id VB-Audio.VoiceMeeterPotato
-
 rem Spotify
 winget install -e --id Spotify.Spotify
 
@@ -28,9 +22,6 @@ winget install -e --id Mozilla.ThunderbirdBeta
 
 rem Drive File Stream
 winget install -e --id Google.DriveFileStream
-
-rem Discord
-winget install -e --id Discord.Discord
 
 
 
