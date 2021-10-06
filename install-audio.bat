@@ -1,10 +1,10 @@
 rem Install script related to Audio 
 
-rem equalizer apo
-start "" "https://sourceforge.net/projects/equalizerapo/"
-
 rem EarTrumpet
 winget install -e --id File-New-Project.EarTrumpet
+
+rem equalizer apo
+start "" "https://sourceforge.net/projects/equalizerapo/"
 
 rem VoiceMeeterPotato
 winget install -e --id VB-Audio.VoiceMeeterPotato
