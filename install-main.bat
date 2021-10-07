@@ -15,7 +15,7 @@ rem Thunderbid beta
 winget install -e --id Mozilla.ThunderbirdBeta
 
 rem Drive File Stream
-winget install -e --id Google.DriveFileStream
+winget install -e --id Google.Drive
 
 
 
