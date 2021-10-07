@@ -1,17 +1,7 @@
 rem Script to install some Essential Software
 
-rem Git
-winget install -e --id Git.Git
-
-rem Windows Terminal
-winget install -e --id Microsoft.WindowsTerminal
-
 rem Java
 winget install -e --id AdoptOpenJDK.OpenJDK.16
-
-
-rem Firefox
-winget install -e --id Mozilla.Firefox
 
 rem Spotify
 winget install -e --id Spotify.Spotify
