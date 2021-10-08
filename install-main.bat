@@ -1,5 +1,7 @@
 rem Script to install some Essential Software
 
+rem Windows Terminal
+
 rem Java
 winget install -e --id AdoptOpenJDK.OpenJDK.16
 
