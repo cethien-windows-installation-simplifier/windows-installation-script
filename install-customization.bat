@@ -4,7 +4,8 @@ rem Rainmeter
 winget install -e --id Rainmeter.Rainmeter
 
 rem Spicetify
-Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1" | Invoke-Expression
+powershell.exe -command "& Invoke-WebRequest -UseBasicParsing \"https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1\" | Invoke-Expression
+
 spicetify
 spicetify config extensions webnowplaying.js
 spicetify config custom_apps new-releases
