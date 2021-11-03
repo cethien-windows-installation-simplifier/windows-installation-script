@@ -11,11 +11,6 @@ winget install -e --id Spotify.Spotify
 rem Discord
 winget install -e --id Discord.Discord
 
-
-
-rem Thunderbid beta
-winget install -e --id Mozilla.ThunderbirdBeta
-
 rem Drive File Stream
 winget install -e --id Google.Drive
 
