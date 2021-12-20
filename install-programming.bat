@@ -4,4 +4,4 @@ rem KeepassXC
 winget install -e --id KeePassXCTeam.KeePassXC
 
 rem Visual Studio Code
-winget install -e --id Microsoft.VisualStudioCode
+winget install -e --id Microsoft.VisualStudioCode -i
