@@ -8,3 +8,6 @@ winget install -e --id KeePassXCTeam.KeePassXC
 
 rem Visual Studio Code
 winget install -e --id Microsoft.VisualStudioCode -i
+
+rem Fira Code Font (for VSCode)
+start "" "https://github.com/tonsky/FiraCode/releases"
