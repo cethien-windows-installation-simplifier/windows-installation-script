@@ -1,5 +1,8 @@
 # Windows Script to install some stuff so my desktop looks pretty
 
+# Logitech G Hub
+Start-Process "https://support.logi.com/hc/en-us/articles/360025298133"
+
 # Corsair iCUE
 winget install -e --id Corsair.iCUE.4
 
