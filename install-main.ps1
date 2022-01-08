@@ -1,7 +1,7 @@
 # Script to install some Essential Software
 
 # Java
-winget install -e --id AdoptOpenJDK.OpenJDK.16
+winget install -e --id Microsoft.OpenJDK.17
 
 # Spotify
 winget install -e --id Spotify.Spotify
