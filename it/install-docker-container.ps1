@@ -10,4 +10,4 @@ docker run -d `
 cr.portainer.io/portainer/portainer-ce:2.9.3
 
 # start portainer
-Start-Process "http://localhost:9443"
+Start-Process "https://localhost:9443"
