@@ -11,3 +11,6 @@ docker run -d `
 -v /var/run/docker.sock:/var/run/docker.sock `
 -v portainer_data:/data `
 cr.portainer.io/portainer/portainer-ce:2.9.3
+
+# start portainer
+Start-Process "http://localhost:9443"
