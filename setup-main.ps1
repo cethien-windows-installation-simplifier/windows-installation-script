@@ -22,6 +22,8 @@ winget install -e --id 7zip.7zip
 winget install -e --id VideoLAN.VLC
 # Adobe Acrobat Reader DC
 winget install -e --id Adobe.AdobeAcrobatReaderDC
+# powertoys
+winget install -e --id Microsoft.PowerToys
 
 # APPS
 # ====
