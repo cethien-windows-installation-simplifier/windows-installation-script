@@ -22,6 +22,3 @@ winget install -e --id VideoLAN.VLC
 
 # Adobe Acrobat Reader DC
 winget install -e --id Adobe.AdobeAcrobatReaderDC
-
-# Bulk Rename Utility
-winget install -e --id TGRMNSoftware.BulkRenameUtility
