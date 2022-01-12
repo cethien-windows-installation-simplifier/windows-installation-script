@@ -41,7 +41,7 @@ winget install -e --id TeamSpeakSystems.TeamSpeakClient
 winget install -e --id WhatsApp.WhatsApp
 # WhatsApp Tray
 $uri = getGithubRepoUrl 'D4koon/WhatsappTray' 'WhatsappTray*.exe'
-$file = 'WhatsappTray-latest.exe'
+$file = 'InstallWhatsappTray-latest.exe'
 Invoke-WebRequest -Uri $uri -OutFile $downloadLocation\$file
 
 Invoke-Item $downloadLocation\$file
@@ -73,7 +73,7 @@ unzip $downloadLocation\$file "variable_ttf/*"
 # CUSTOMIZATION
 # ====
 # Logitech G Hub
-$file = 'lghub_installer.exe'
+$file = 'InstallLogitechGhub.exe'
 Invoke-WebRequest -Uri "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" -OutFile $downloadLocation\$file
 Invoke-Item $downloadLocation\$file
 # Corsair iCUE
@@ -88,7 +88,7 @@ Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/sp
 # EarTrumpet
 winget install -e --id File-New-Project.EarTrumpet
 # Equalizer APO
-$file = 'EqualizerAPO-Installer.exe'
+$file = 'InstallEqualizerAPO-latest.exe'
 Invoke-WebRequest -UserAgent "Wget" -Uri "https://sourceforge.net/projects/equalizerapo/files/latest/download" -OutFile $downloadLocation\$file
 Invoke-Item $downloadLocation\$file
 # VoiceMeeter Potato
