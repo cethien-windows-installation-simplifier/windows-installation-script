@@ -2,48 +2,60 @@
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
 $vstPath = $ENV:ProgramFiles + "/VSTPlugins"
 
-# FUNCTIONS
-# ====
+#region FUNCTIONS
+
 function getGithubLatestReleaseUrl($repo, $assetPattern) {
     $releasesUri = "https://api.github.com/repos/$repo/releases/latest"
     $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $assetPattern
     return $asset.browser_download_url
 }
 
-# RUNTIMES
-# ====
+#endregion FUNCTIONS
+
+#region RUNTIMES
+
 # Java
 winget install -e --id Microsoft.OpenJDK.17
 
-# UTILITIES
-# ====
+#endregion RUNTIMES
+
+#region UTILITIES
+
 # 7Zip
 winget install -e --id 7zip.7zip
+
 # VLC Media Player
 winget install -e --id VideoLAN.VLC
+
 # Adobe Acrobat Reader DC
 winget install -e --id Adobe.AdobeAcrobatReaderDC
-# powertoys
-winget install -e --id Microsoft.PowerToys
 
-# APPS
-# ====
+#endregion UTILITIES
+
+#region MAIN APPS
+
 # Google Chrome
 winget install -e --id Google.Chrome
+
 # Spotify
 winget install -e --id Spotify.Spotify
+
 # Discord
 winget install -e --id Discord.Discord
+
 # Drive File Stream
 winget install -e --id Google.Drive
 
+#endregion MAIN APPS
 
-# COMMUNICATION
-# ====
+#region COMMUNICATION
+
 # Teamspeak
 winget install -e --id TeamSpeakSystems.TeamSpeakClient
+
 # WhatsApp
 winget install -e --id WhatsApp.WhatsApp
+
 # WhatsApp Tray
 $uri = getGithubLatestReleaseUrl 'D4koon/WhatsappTray' 'WhatsappTray*.exe'
 $file = 'InstallWhatsappTray-latest.exe'
@@ -51,22 +63,32 @@ Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
 
 Invoke-Item $downloadLocation/$file
 
-# EDITING
-# ====
+#endregion COMMUNICATION
+
+#region EDITING
+
 # paint.net
 $uri = "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip"
 $file = 'paintNET.zip'
 Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
 unzip $downloadLocation/$file -d 
+
 # inkscape
 winget install -e --id Inkscape.Inkscape
+
 # gimp
 winget install -e --id GIMP.GIMP
+
 # audacity
 winget install -e --id Audacity.Audacity
 
-# MISC
-# ====
+#endregion EDITING
+
+#region MISC
+
+# powertoys
+winget install -e --id Microsoft.PowerToys
+
 # FiraCode
 $uri = getGithubLatestReleaseUrl 'tonsky/FiraCode' 'Fira_Code_v*.zip'
 $file = 'FiraCode-latest.zip'
@@ -74,21 +96,27 @@ Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
 unzip $downloadLocation/$file "variable_ttf/*"
 Invoke-Item ./variable_ttf/FiraCode-VF.ttf
 
-# CUSTOMIZATION
-# ====
+#endregion MISC
+
+#region CUSTOMIZATION
+
 # Logitech G Hub
 $file = 'InstallLogitechGhub.exe'
 Invoke-WebRequest -Uri "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" -OutFile $downloadLocation/$file
 Invoke-Item $downloadLocation/$file
+
 # Corsair iCUE
 winget install -e --id Corsair.iCUE.4
+
 # Rainmeter
 winget install -e --id Rainmeter.Rainmeter
+
 # Spicetify
 Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1" | Invoke-Expression
 
-# AUDIO
-# ====
+#endregion CUSTOMIZATION
+
+#region AUDIO
 
 # EarTrumpet
 winget install -e --id File-New-Project.EarTrumpet
@@ -123,25 +151,34 @@ Invoke-WebRequest -UserAgent "Wget" -Uri "https://download.vb-audio.com/Download
 unzip $downloadLocation/$file -d "./VBCABLE/"
 Invoke-Item $downloadLocation/VBCABLE/VBCABLE_Setup_x64.exe
 
-# PROGRAMMING
-# ====
+#endregion AUDIO
+
+#region PROGRAMMING
+
 # Git (interactive mode)
 winget install -e --id Git.Git -i
+
 # Github CLI
 winget install -e --id GitHub.cli
+
 # Visual Studio Code (interactive mode)
 winget install -e --id Microsoft.VisualStudioCode -i
+
 # KeepassXC
 winget install -e --id KeePassXCTeam.KeePassXC
 
-# GAMING
-# ====
+#endregion PROGRAMMING
+
+#region GAMING
 
 # Steam
 winget install -e --id Valve.Steam
 
-# STREAMING
-# ====
+#endregion GAMING
+
+#region STREAMING
 
 # OBS Studio
 winget install -e --id OBSProject.OBSStudio
+
+#endregion STREAMING
