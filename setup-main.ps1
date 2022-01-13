@@ -169,6 +169,16 @@ winget install -e --id KeePassXCTeam.KeePassXC
 # Steam
 winget install -e --id Valve.Steam
 
+# MultiMC (Minecraft Instance Manager)
+$location = "$downloadLocation/multiMC-stable"
+$file = download "https://files.multimc.org/downloads/mmc-stable-win32.zip" 'multiMC-latest-stable.zip'
+unzip $file -d $location
+explorer.exe $location
+
+$readmefile = "install-readme.txt"
+New-Item $location -ItemType Directory
+New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the MultiMC folder wherever you want to (preferably '$progPath')"
+
 #endregion GAMING
 
 #region STREAMING
