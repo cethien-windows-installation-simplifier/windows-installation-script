@@ -1,6 +1,7 @@
 # Script to install my stuff
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
 $vstPath = $ENV:ProgramFiles + "/VSTPlugins"
+$progPath = $ENV:ProgramFiles
 
 #region FUNCTIONS
 
@@ -8,6 +9,15 @@ function getGithubLatestReleaseUrl($repo, $assetPattern) {
     $releasesUri = "https://api.github.com/repos/$repo/releases/latest"
     $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $assetPattern
     return $asset.browser_download_url
+}
+
+function download($uri, $zipFile) {
+    Invoke-WebRequest -UserAgent "Wget" -Uri $uri -OutFile $downloadLocation/$zipFile
+    return "$downloadLocation/$zipFile"
+}
+
+function downloadAndRun($uri, $runFile) {
+    Invoke-Item $(download $uri $runFile)
 }
 
 #endregion FUNCTIONS
@@ -58,20 +68,16 @@ winget install -e --id WhatsApp.WhatsApp
 
 # WhatsApp Tray
 $uri = getGithubLatestReleaseUrl 'D4koon/WhatsappTray' 'WhatsappTray*.exe'
-$file = 'InstallWhatsappTray-latest.exe'
-Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
-
-Invoke-Item $downloadLocation/$file
+downloadAndRun $uri 'InstallWhatsappTray-latest.exe'
 
 #endregion COMMUNICATION
 
 #region EDITING
 
 # paint.net
-$uri = "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip"
-$file = 'paintNET.zip'
-Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
-unzip $downloadLocation/$file -d 
+
+$file = download "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip" 'paintNET.zip' 
+unzip $file -d 
 
 # inkscape
 winget install -e --id Inkscape.Inkscape
@@ -91,9 +97,8 @@ winget install -e --id Microsoft.PowerToys
 
 # FiraCode
 $uri = getGithubLatestReleaseUrl 'tonsky/FiraCode' 'Fira_Code_v*.zip'
-$file = 'FiraCode-latest.zip'
-Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
-unzip $downloadLocation/$file "variable_ttf/*"
+$file = download $uri 'FiraCode-latest.zip'
+unzip $file "variable_ttf/*"
 Invoke-Item ./variable_ttf/FiraCode-VF.ttf
 
 #endregion MISC
@@ -101,9 +106,7 @@ Invoke-Item ./variable_ttf/FiraCode-VF.ttf
 #region CUSTOMIZATION
 
 # Logitech G Hub
-$file = 'InstallLogitechGhub.exe'
-Invoke-WebRequest -Uri "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" -OutFile $downloadLocation/$file
-Invoke-Item $downloadLocation/$file
+downloadAndRun "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" 'InstallLogitechGhub.exe'
 
 # Corsair iCUE
 winget install -e --id Corsair.iCUE.4
@@ -122,33 +125,25 @@ Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/sp
 winget install -e --id File-New-Project.EarTrumpet
 
 # Equalizer APO
-$file = 'InstallEqualizerAPO-latest.exe'
-Invoke-WebRequest -UserAgent "Wget" -Uri "https://sourceforge.net/projects/equalizerapo/files/latest/download" -OutFile $downloadLocation/$file
-Invoke-Item $downloadLocation/$file
+downloadAndRun "https://sourceforge.net/projects/equalizerapo/files/latest/download" 'InstallEqualizerAPO-latest.exe'
 
 # Noise Suppresion VST
 $uri = getGithubLatestReleaseUrl 'werman/noise-suppression-for-voice' 'windows_rnnoise_bin_x64*.zip'
-$file = 'rnnoise-latest.zip'
-Invoke-WebRequest -Uri $uri -OutFile $downloadLocation/$file
+$file = download $uri 'rnnoise-latest.zip'
 $location = "$downloadLocation/librnnoiseVST"
-$readmefile = "install-readme.txt"
-if (!(Test-Path $location)) {   
-    New-Item $location -ItemType Directory
-}
-if (!(Test-Path "$location/$readmefile")) {    
-    New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the .dll from bin/vst/ into $vstPath"
-}
-unzip "$downloadLocation/$file" "bin/vst/*" -d $location
+unzip $file "bin/vst/*" -d $location
 explorer.exe $location
-Invoke-Item "$location/$readmefile"
+
+$readmefile = "install-readme.txt"
+New-Item $location -ItemType Directory
+New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the .dll from bin/vst/ into $vstPath"
 
 # VoiceMeeter Potato
 winget install -e --id VB-Audio.VoicemeeterPotato
 
 # Virtual Audio Cable
-$file = 'VBCABLE_Driver_Pack.zip'
-Invoke-WebRequest -UserAgent "Wget" -Uri "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" -OutFile $downloadLocation/$file
-unzip $downloadLocation/$file -d "./VBCABLE/"
+$file = download "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" 'VBCABLE_Driver_Pack.zip'
+unzip $file -d "./VBCABLE/"
 Invoke-Item $downloadLocation/VBCABLE/VBCABLE_Setup_x64.exe
 
 #endregion AUDIO
