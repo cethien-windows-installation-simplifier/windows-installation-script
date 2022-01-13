@@ -1,7 +1,7 @@
 # Script to install my stuff
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
-$vstPath = $ENV:ProgramFiles + "/VSTPlugins"
 $progPath = $ENV:ProgramFiles
+$vstPath = $ENV:ProgramFiles + "/VSTPlugins"
 
 #region FUNCTIONS
 
@@ -96,10 +96,11 @@ winget install -e --id Audacity.Audacity
 winget install -e --id Microsoft.PowerToys
 
 # FiraCode
+$location = "$downloadLocation/Fonts"
 $uri = getGithubLatestReleaseUrl 'tonsky/FiraCode' 'Fira_Code_v*.zip'
 $file = download $uri 'FiraCode-latest.zip'
-unzip $file "variable_ttf/*"
-Invoke-Item ./variable_ttf/FiraCode-VF.ttf
+unzip -o -j $file "variable_ttf/*" -d $location 
+Invoke-Item "$location/FiraCode-VF.ttf"
 
 #endregion MISC
 
@@ -130,21 +131,22 @@ downloadAndRun "https://sourceforge.net/projects/equalizerapo/files/latest/downl
 # Noise Suppresion VST
 $uri = getGithubLatestReleaseUrl 'werman/noise-suppression-for-voice' 'windows_rnnoise_bin_x64*.zip'
 $file = download $uri 'rnnoise-latest.zip'
-$location = "$downloadLocation/librnnoiseVST"
-unzip $file "bin/vst/*" -d $location
+$location = "$downloadLocation/VstPlugins"
+unzip -o -j $file "bin/vst/*" -d $location
 explorer.exe $location
 
 $readmefile = "install-readme.txt"
 New-Item $location -ItemType Directory
-New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the .dll from bin/vst/ into $vstPath"
+New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the .dll into $vstPath"
 
 # VoiceMeeter Potato
 winget install -e --id VB-Audio.VoicemeeterPotato
 
 # Virtual Audio Cable
+$location = "$downloadLocation/VBCABLE"
 $file = download "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" 'VBCABLE_Driver_Pack.zip'
-unzip $file -d "./VBCABLE/"
-Invoke-Item $downloadLocation/VBCABLE/VBCABLE_Setup_x64.exe
+unzip $file -d $location
+Invoke-Item "$location/VBCABLE_Setup_x64.exe"
 
 #endregion AUDIO
 
@@ -170,12 +172,12 @@ winget install -e --id KeePassXCTeam.KeePassXC
 winget install -e --id Valve.Steam
 
 # MultiMC (Minecraft Instance Manager)
-$location = "$downloadLocation/multiMC-stable"
+$location = "$downloadLocation/Program Files"
 $file = download "https://files.multimc.org/downloads/mmc-stable-win32.zip" 'multiMC-latest-stable.zip'
 unzip $file -d $location
 explorer.exe $location
 
-$readmefile = "install-readme.txt"
+$readmefile = "install-multi-readme.txt"
 New-Item $location -ItemType Directory
 New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the MultiMC folder wherever you want to (preferably '$progPath')"
 
