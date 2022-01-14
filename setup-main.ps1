@@ -1,24 +1,48 @@
 # Script to install my stuff
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
+$fontInstallerLocation = "$downloadLocation/Fonts"
+$vstPluginsLocation = "$downloadLocation/VstPlugins"
+$programslocation = "$downloadLocation/Programs"
+
 $progPath = $ENV:ProgramFiles
 $vstPath = $ENV:ProgramFiles + "/VSTPlugins"
 
+# GENERATE FOLDERS
+New-Item -Path $downloadLocation -Name "Fonts" -ItemType Directory
+New-Item -Path $downloadLocation -Name "VstPlugins" -ItemType Directory
+New-Item -Path $downloadLocation -Name "Programs" -ItemType Directory
+
 #region FUNCTIONS
 
-function getGithubLatestReleaseUrl($repo, $assetPattern) {
-    $releasesUri = "https://api.github.com/repos/$repo/releases/latest"
-    $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $assetPattern
-    return $asset.browser_download_url
+function ReloadPath {
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    Write-Host 'PATH refreshed'
 }
 
-function download($uri, $zipFile) {
-    Invoke-WebRequest -UserAgent "Wget" -Uri $uri -OutFile $downloadLocation/$zipFile
-    return "$downloadLocation/$zipFile"
+function Get-File {
+    param (
+        [string]$URL,
+        [string]$OutFile
+    )
+
+    Invoke-WebRequest -UserAgent "Wget" -Uri $URL -OutFile $downloadLocation/$OutFile
+    return "$downloadLocation/$OutFile"
 }
 
-function downloadAndRun($uri, $runFile) {
-    Invoke-Item $(download $uri $runFile)
+function Get-GithubLatestReleaseAsset {
+    param (
+        [string]$Repository,
+        [string]$AssetNamePattern,
+        [string]$OutFile
+    )
+
+    $releasesUri = "https://api.github.com/repos/$Repository/releases/latest"
+    $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $AssetNamePattern
+    $assetUrl = $asset.browser_download_url
+
+    return Get-File -URL $assetUrl -OutFile $OutFile
 }
+
 
 #endregion FUNCTIONS
 
@@ -67,8 +91,11 @@ winget install -e --id TeamSpeakSystems.TeamSpeakClient
 winget install -e --id WhatsApp.WhatsApp
 
 # WhatsApp Tray
-$uri = getGithubLatestReleaseUrl 'D4koon/WhatsappTray' 'WhatsappTray*.exe'
-downloadAndRun $uri 'InstallWhatsappTray-latest.exe'
+$file = Get-GithubLatestReleaseAsset `
+    -Repository 'D4koon/WhatsappTray' `
+    -AssetNamePattern 'WhatsappTray*.exe' `
+    -OutFile 'InstallWhatsappTray-latest.exe'
+Invoke-Item $file
 
 #endregion COMMUNICATION
 
@@ -76,7 +103,9 @@ downloadAndRun $uri 'InstallWhatsappTray-latest.exe'
 
 # paint.net
 
-$file = download "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip" 'paintNET.zip' 
+$file = Get-File `
+    -URL "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip" `
+    -OutFile 'paintNET.zip' 
 unzip $file -d 
 
 # inkscape
@@ -95,19 +124,28 @@ winget install -e --id Audacity.Audacity
 # powertoys
 winget install -e --id Microsoft.PowerToys
 
-# FiraCode
-$location = "$downloadLocation/Fonts"
-$uri = getGithubLatestReleaseUrl 'tonsky/FiraCode' 'Fira_Code_v*.zip'
-$file = download $uri 'FiraCode-latest.zip'
-unzip -o -j $file "variable_ttf/*" -d $location 
-Invoke-Item "$location/FiraCode-VF.ttf"
-
 #endregion MISC
 
 #region CUSTOMIZATION
 
+#region FONTS
+
+# FiraCode Font
+$file = Get-GithubLatestReleaseAsset `
+    -Repository 'tonsky/FiraCode' `
+    -AssetNamePattern 'Fira_Code_v*.zip' `
+    -OutFile 'FiraCode-latest.zip'
+
+unzip -o -j $file "variable_ttf/*" -d $fontInstallerLocation 
+Invoke-Item "$fontInstallerLocation/FiraCode-VF.ttf"
+    
+#endregion FONTS
+
 # Logitech G Hub
-downloadAndRun "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" 'InstallLogitechGhub.exe'
+$file = Get-File `
+    -URL "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" `
+    -OutFile 'InstallLogitechGhub.exe'
+Invoke-Item $file
 
 # Corsair iCUE
 winget install -e --id Corsair.iCUE.4
@@ -116,7 +154,7 @@ winget install -e --id Corsair.iCUE.4
 winget install -e --id Rainmeter.Rainmeter
 
 # Spicetify
-Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1" | Invoke-Expression
+Invoke-WebRequest "https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1" | Invoke-Expression
 
 #endregion CUSTOMIZATION
 
@@ -126,27 +164,41 @@ Invoke-WebRequest -UseBasicParsing "https://raw.githubusercontent.com/khanhas/sp
 winget install -e --id File-New-Project.EarTrumpet
 
 # Equalizer APO
-downloadAndRun "https://sourceforge.net/projects/equalizerapo/files/latest/download" 'InstallEqualizerAPO-latest.exe'
-
-# Noise Suppresion VST
-$uri = getGithubLatestReleaseUrl 'werman/noise-suppression-for-voice' 'windows_rnnoise_bin_x64*.zip'
-$file = download $uri 'rnnoise-latest.zip'
-$location = "$downloadLocation/VstPlugins"
-unzip -o -j $file "bin/vst/*" -d $location
-explorer.exe $location
-
-$readmefile = "install-readme.txt"
-New-Item $location -ItemType Directory
-New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the .dll into $vstPath"
+$file = Get-File `
+    -URL "https://sourceforge.net/projects/equalizerapo/files/latest/Download"  `
+    -OutFile 'InstallEqualizerAPO-latest.exe'
+Invoke-Item $file    
 
 # VoiceMeeter Potato
 winget install -e --id VB-Audio.VoicemeeterPotato
 
 # Virtual Audio Cable
-$location = "$downloadLocation/VBCABLE"
-$file = download "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" 'VBCABLE_Driver_Pack.zip'
+$file = Get-File `
+    -URL "https://Download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" `
+    -OutFile 'VBCABLE_Driver_Pack.zip'
+
+$location = "$downloadLocation/Install_VBCABLE"
 unzip $file -d $location
 Invoke-Item "$location/VBCABLE_Setup_x64.exe"
+
+#region VST Plugins
+
+# Noise Suppresion VST
+$file = Get-GithubLatestReleaseAsset `
+    -Repository 'werman/noise-suppression-for-voice' `
+    -AssetNamePattern 'windows_rnnoise_bin_x64*.zip' `
+    -OutFile 'rnnoise-latest.zip'
+    
+unzip -o -j $file "bin/vst/*" -d $vstPluginsLocation
+    
+$readmefile = "install-vst-readme.txt"
+New-Item "$vstPluginsLocation/$readmefile" `
+    -ItemType File `
+    -Value "Install by dropping the .dll into $vstPath"
+
+explorer.exe $vstPluginsLocation
+
+#endregion VST Plugins
 
 #endregion AUDIO
 
@@ -172,14 +224,18 @@ winget install -e --id KeePassXCTeam.KeePassXC
 winget install -e --id Valve.Steam
 
 # MultiMC (Minecraft Instance Manager)
-$location = "$downloadLocation/Program Files"
-$file = download "https://files.multimc.org/downloads/mmc-stable-win32.zip" 'multiMC-latest-stable.zip'
-unzip $file -d $location
-explorer.exe $location
+$file = Get-File `
+    -URL "https://files.multimc.org/downloads/mmc-stable-win32.zip" `
+    -OutFile 'multiMC-latest-stable.zip'
 
+unzip $file -d $programslocation
+    
 $readmefile = "install-multi-readme.txt"
-New-Item $location -ItemType Directory
-New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the MultiMC folder wherever you want to (preferably '$progPath')"
+New-Item "$programslocation/MultiMC/$readmefile" `
+    -ItemType File `
+    -Value "Install by dropping the MultiMC folder wherever you want to (preferably '$progPath')"
+
+explorer.exe $programslocation
 
 #endregion GAMING
 
@@ -189,3 +245,20 @@ New-Item "$location/$readmefile" -ItemType File -Value "Install by dropping the 
 winget install -e --id OBSProject.OBSStudio
 
 #endregion STREAMING
+
+#================================
+# POST-INSTALL
+#================================
+
+reloadEnv
+
+#region Spicetify
+
+# install spicetify expensions & apps
+spicetify
+spicetify config extensions webnowplaying.js
+spicetify config custom_apps new-releases
+spicetify config inject_css 0 replace_colors 0
+spicetify backup apply
+
+#endregion Spicetify
