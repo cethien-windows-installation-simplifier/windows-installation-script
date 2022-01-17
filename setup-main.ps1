@@ -1,18 +1,20 @@
 # Script to install my stuff
+
+#region FUNCTIONS & VARIABLES
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
-$fontInstallerLocation = "$downloadLocation/Fonts"
-$vstPluginsLocation = "$downloadLocation/VstPlugins"
-$programslocation = "$downloadLocation/Programs"
 
-$progPath = $ENV:ProgramFiles
-$vstPath = $ENV:ProgramFiles + "/VSTPlugins"
+$commonStartMenuPath = [Environment]::GetFolderPath("CommonPrograms")
+$userStartMenuPath = [Environment]::GetFolderPath("Programs")
+$programsPath = $ENV:ProgramFiles
 
-# GENERATE FOLDERS
-New-Item -Path $downloadLocation -Name "Fonts" -ItemType Directory
-New-Item -Path $downloadLocation -Name "VstPlugins" -ItemType Directory
-New-Item -Path $downloadLocation -Name "Programs" -ItemType Directory
-
-#region FUNCTIONS
+function Create-Directory {
+    param (
+        [string]$Path,
+        [string]$Name
+    )
+    
+    return New-Item -Path $Path -Name $Name -ItemType Directory
+}
 
 function ReloadPath {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
@@ -43,8 +45,41 @@ function Get-GithubLatestReleaseAsset {
     return Get-File -URL $assetUrl -OutFile $OutFile
 }
 
+function Create-Shortcut {
+    param (
+        [string]$SourceFilePath,
+        [string]$ShortcutLocation,
+        [string]$FileName
+    )
+    
+    $ShortcutPath = "$ShortcutLocation\$FileName.lnk"
+    $WScriptObj = New-Object -ComObject ("WScript.Shell")
+    $shortcut = $WscriptObj.CreateShortcut($ShortcutPath)
+    $shortcut.TargetPath = $SourceFilePath
+    $shortcut.Save()
 
-#endregion FUNCTIONS
+    return $SourceFilePath
+}
+
+function Create-ShortcutStartUser {
+    param (
+        [string]$SourceFilePath,
+        [string]$ShortcutName
+    )
+        
+    return Create-Shortcut -SourceFilePath $SourceFilePath -ShortcutLocation $userStartMenuPath -FileName $ShortcutName
+}
+
+function Create-ShortcutStartAll {
+    param (
+        [string]$SourceFilePath,
+        [string]$ShortcutName
+    )
+        
+    return Create-Shortcut -SourceFilePath $SourceFilePath -ShortcutLocation $commonStartMenuPath -FileName $ShortcutName
+}
+
+#endregion FUNCTIONS & VARIABLES
 
 #region RUNTIMES
 
@@ -57,6 +92,23 @@ winget install -e --id Microsoft.OpenJDK.17
 
 # 7Zip
 winget install -e --id 7zip.7zip
+
+#Geek Uninstaller
+$file = Get-File `
+    -URL "https://geekuninstaller.com/geek.zip" `
+    -OutFile "./geekUnistaller.zip"
+ 
+$installPath = Create-Directory `
+    -Path $programsPath `
+    -Name "Geek Uninstaller"
+
+Expand-Archive `
+    -Path $file `
+    -DestinationPath $installPath
+
+Create-ShortcutStartAll `
+    -SourceFilePath "$installPath/geek.exe" `
+    -ShortcutName "Geek Uninstaller"
 
 # VLC Media Player
 winget install -e --id VideoLAN.VLC
@@ -95,6 +147,7 @@ $file = Get-GithubLatestReleaseAsset `
     -Repository 'D4koon/WhatsappTray' `
     -AssetNamePattern 'WhatsappTray*.exe' `
     -OutFile 'InstallWhatsappTray-latest.exe'
+
 Invoke-Item $file
 
 #endregion COMMUNICATION
@@ -102,11 +155,11 @@ Invoke-Item $file
 #region EDITING
 
 # paint.net
-
 $file = Get-File `
     -URL "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip" `
     -OutFile 'paintNET.zip' 
-unzip $file -d 
+Expand-Archive -Path $file -DestinationPath $downloadLocation
+Invoke-Item $(Get-ChildItem -Path $downloadLocation -Filter *.exe -Include "paint.net" | Select-Object -First 1)
 
 # inkscape
 winget install -e --id Inkscape.Inkscape
@@ -136,8 +189,8 @@ $file = Get-GithubLatestReleaseAsset `
     -AssetNamePattern 'Fira_Code_v*.zip' `
     -OutFile 'FiraCode-latest.zip'
 
-unzip -o -j $file "variable_ttf/*" -d $fontInstallerLocation 
-Invoke-Item "$fontInstallerLocation/FiraCode-VF.ttf"
+unzip -o -j $file "variable_ttf/*" -d $fontDownloadLocation 
+Invoke-Item "$fontDownloadLocation/FiraCode-VF.ttf"
     
 #endregion FONTS
 
@@ -189,14 +242,7 @@ $file = Get-GithubLatestReleaseAsset `
     -AssetNamePattern 'windows_rnnoise_bin_x64*.zip' `
     -OutFile 'rnnoise-latest.zip'
     
-unzip -o -j $file "bin/vst/*" -d $vstPluginsLocation
-    
-$readmefile = "install-vst-readme.txt"
-New-Item "$vstPluginsLocation/$readmefile" `
-    -ItemType File `
-    -Value "Install by dropping the .dll into $vstPath"
-
-explorer.exe $vstPluginsLocation
+unzip -o -j $file "bin/vst/*" -d $(Create-Directory -Path $programsPath -Name VSTPlugins)
 
 #endregion VST Plugins
 
@@ -228,14 +274,7 @@ $file = Get-File `
     -URL "https://files.multimc.org/downloads/mmc-stable-win32.zip" `
     -OutFile 'multiMC-latest-stable.zip'
 
-unzip $file -d $programslocation
-    
-$readmefile = "install-multi-readme.txt"
-New-Item "$programslocation/MultiMC/$readmefile" `
-    -ItemType File `
-    -Value "Install by dropping the MultiMC folder wherever you want to (preferably '$progPath')"
-
-explorer.exe $programslocation
+unzip $file -d $programsPath
 
 #endregion GAMING
 
