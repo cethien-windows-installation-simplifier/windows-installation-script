@@ -289,7 +289,7 @@ winget install -e --id OBSProject.OBSStudio
 # POST-INSTALL
 #================================
 
-reloadEnv
+ReloadPath
 
 #region Spicetify
 
