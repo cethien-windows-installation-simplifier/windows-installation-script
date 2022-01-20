@@ -5,6 +5,7 @@ $downloadLocation = $ENV:USERPROFILE + "/Downloads"
 
 $commonStartMenuPath = [Environment]::GetFolderPath("CommonPrograms")
 $userStartMenuPath = [Environment]::GetFolderPath("Programs")
+$commonStartUpPath = [Environment]::GetFolderPath("CommonStartup")
 $programsPath = $ENV:ProgramFiles
 
 function Create-Directory {
@@ -289,6 +290,11 @@ winget install -e --id OBSProject.OBSStudio
 #================================
 # POST-INSTALL
 #================================
+
+#Download Update Script into Startup Folder
+Invoke-WebRequest `
+    -Uri "https://raw.githubusercontent.com/Cethien/windows-install-scripts/main/update.ps1" `
+    -OutFile $commonStartUpPath/update.ps1
 
 ReloadPath
 
