@@ -1,4 +1,4 @@
-# Script to install my stuff
+# Script to install stuff
 
 #region FUNCTIONS & VARIABLES
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
@@ -11,8 +11,7 @@ function Create-Directory {
     param (
         [string]$Path,
         [string]$Name
-    )
-    
+    )  
     return New-Item -Path $Path -Name $Name -ItemType Directory
 }
 
@@ -26,9 +25,10 @@ function Get-File {
         [string]$URL,
         [string]$OutFile
     )
-
+    Write-Host "Downloading '$OutFile' from $URL..."
     Invoke-WebRequest -UserAgent "Wget" -Uri $URL -OutFile $downloadLocation/$OutFile
     return "$downloadLocation/$OutFile"
+    Write-Host "Downloaded '$OutFile'!"
 }
 
 function Get-GithubLatestReleaseAsset {
@@ -37,12 +37,13 @@ function Get-GithubLatestReleaseAsset {
         [string]$AssetNamePattern,
         [string]$OutFile
     )
-
     $releasesUri = "https://api.github.com/repos/$Repository/releases/latest"
     $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $AssetNamePattern
+    Write-Host "Fetching latest Asset '$asset' from '$Repository'..."
     $assetUrl = $asset.browser_download_url
 
     return Get-File -URL $assetUrl -OutFile $OutFile
+    Write-Host "Fetched '$asset' as '$OutFile'!"
 }
 
 function Create-Shortcut {
@@ -51,13 +52,12 @@ function Create-Shortcut {
         [string]$ShortcutLocation,
         [string]$FileName
     )
-    
     $ShortcutPath = "$ShortcutLocation\$FileName.lnk"
     $WScriptObj = New-Object -ComObject ("WScript.Shell")
     $shortcut = $WscriptObj.CreateShortcut($ShortcutPath)
     $shortcut.TargetPath = $SourceFilePath
     $shortcut.Save()
-
+    Write-Host "Creating Shortcut '$ShortcutName' Done"
     return $SourceFilePath
 }
 
@@ -67,6 +67,7 @@ function Create-ShortcutStartUser {
         [string]$ShortcutName
     )
         
+    Write-Host "Creating User Shortcut '$ShortcutName' in start..."
     return Create-Shortcut -SourceFilePath $SourceFilePath -ShortcutLocation $userStartMenuPath -FileName $ShortcutName
 }
 
@@ -75,7 +76,7 @@ function Create-ShortcutStartAll {
         [string]$SourceFilePath,
         [string]$ShortcutName
     )
-        
+    Write-Host "Creating Shortcut '$ShortcutName' in start..." 
     return Create-Shortcut -SourceFilePath $SourceFilePath -ShortcutLocation $commonStartMenuPath -FileName $ShortcutName
 }
 
@@ -97,7 +98,7 @@ winget install -e --id 7zip.7zip
 $file = Get-File `
     -URL "https://geekuninstaller.com/geek.zip" `
     -OutFile "./geekUnistaller.zip"
- 
+
 $installPath = Create-Directory `
     -Path $programsPath `
     -Name "Geek Uninstaller"
