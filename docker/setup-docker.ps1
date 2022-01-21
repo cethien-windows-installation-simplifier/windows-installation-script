@@ -3,6 +3,13 @@ function ReloadPath {
     Write-Host 'PATH refreshed'
 }
 
+# enable WSL and upgrade to WSL 2
+wsl --install
+wsl --set-default-version 2
+# install Ubuntu in WSL
+wsl.exe --install -d "Ubuntu"
+wsl --setdefault "Ubuntu"
+
 # Docker
 winget install -e --id Docker.DockerDesktop
 
