@@ -22,4 +22,5 @@ Invoke-WebRequest "https://raw.githubusercontent.com/Cethien/windows-install-scr
 ```
 
 3. :clock1: [Wait](https://www.wikihow.com/Wait-Patiently)
-4. :birthday: Profit!
+4. ???
+5. :birthday: Profit!
