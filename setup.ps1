@@ -92,6 +92,9 @@ winget install -e --id Microsoft.OpenJDK.17
 
 #region UTILITIES
 
+# Windows Terminal
+winget install -e --id Microsoft.WindowsTerminal
+
 # 7Zip
 winget install -e --id 7zip.7zip
 
@@ -250,7 +253,7 @@ unzip -o -j $file "bin/vst/*" -d $(Create-Directory -Path $programsPath -Name VS
 
 #endregion AUDIO
 
-#region PROGRAMMING
+#region DEVELOPMENT
 
 # Git (interactive mode)
 winget install -e --id Git.Git -i
@@ -264,7 +267,10 @@ winget install -e --id Microsoft.VisualStudioCode -i
 # KeepassXC
 winget install -e --id KeePassXCTeam.KeePassXC
 
-#endregion PROGRAMMING
+# DevToys
+winget install -e --id 9PGCV4V3BK4W
+
+#endregion DEVELOPMENT
 
 #region GAMING
 
