@@ -5,10 +5,10 @@ Invoke-WebRequest `
     -OutFile "$startup/update.ps1"
 Write-Host "Newest Update installed!"
 
-Write-Host "Updating Winget files..."
-winget upgrade --all
-Write-Host "winget apps updated!"
-
 Write-Host "Updating Spictify..."
 spicetify upgrade
 Write-Host "Spictify updated!"
+
+Write-Host "Updating Winget files..."
+winget upgrade --all
+Write-Host "winget apps updated!"

@@ -297,11 +297,6 @@ winget install -e --id OBSProject.OBSStudio
 # POST-INSTALL
 #================================
 
-#Download Update Script into Startup Folder
-Invoke-WebRequest `
-    -Uri "https://raw.githubusercontent.com/Cethien/windows-install-scripts/main/update.ps1" `
-    -OutFile $commonStartUpPath/update.ps1
-
 ReloadPath
 
 #region Spicetify
@@ -314,3 +309,8 @@ spicetify config inject_css 0 replace_colors 0
 spicetify backup apply
 
 #endregion Spicetify
+
+#Download Update Script into Startup Folder
+Invoke-WebRequest `
+    -Uri "https://raw.githubusercontent.com/Cethien/windows-install-scripts/main/update.ps1" `
+    -OutFile $commonStartUpPath/update.ps1
