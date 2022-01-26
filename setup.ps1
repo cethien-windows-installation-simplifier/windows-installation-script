@@ -310,7 +310,18 @@ spicetify backup apply
 
 #endregion Spicetify
 
+#region Update Script
+
 #Download Update Script into Startup Folder
 Invoke-WebRequest `
     -Uri "https://raw.githubusercontent.com/Cethien/windows-install-scripts/main/update.ps1" `
     -OutFile $commonStartUpPath/update.ps1
+
+$acl = Get-Acl $commonStartUpPath/update.ps1
+
+$AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule($ENV:USERNAME, "FullControl", "Allow")
+$acl.SetAccessRule($AccessRule)
+
+$acl | Set-Acl $commonStartUpPath/update.ps1
+
+#endregion Update Script
