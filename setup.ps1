@@ -18,10 +18,6 @@ Write-Host "Running main Installation..."
 RunFromRaw -FileName "install.ps1"
 Write-Host "Main Installation done!"
 
-#================================
-# POST-INSTALL
-#================================
-
 ReloadPath
 
 Write-Host "Running customization..."
