@@ -80,7 +80,7 @@ function CreateShortcutStartAll {
 
 #endregion FUNCTIONS
 
-# Powershell (installed Powershell is legacy version)
+# Powershell
 winget install -e --id Microsoft.PowerShell --source winget
 
 # Windows Terminal
@@ -180,13 +180,14 @@ unzip -o -j $file "/*.otf" -d $userFontPath
     
 #endregion FONTS
 
+#region CUSTOMIZATION
+
 # Logitech G Hub
 $file = GetFile `
     -URL "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" `
     -OutFile 'InstallLogitechGhub.exe'
 Invoke-Item $file
 
-#region CUSTOMIZATION
 
 # Corsair iCUE
 winget install -e --id Corsair.iCUE.4
