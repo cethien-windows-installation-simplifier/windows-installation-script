@@ -1,9 +1,9 @@
 #region Windows Terminal
 
 # set the new powershell as default profile
+# hide cmd in profiles
 # hide Windows Powershell in profiles
 # hide Azure Terminal in profiles
-# hide Git bash in profiles
 # config powershell to load oh-my-posh's powerlevel10k_rainbow on startup
 Start-Transcript -Path $PROFILE
 Write-Output "Clear-Host"

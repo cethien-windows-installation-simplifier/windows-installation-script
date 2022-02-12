@@ -7,7 +7,57 @@ $commonStartMenuPath = [Environment]::GetFolderPath("CommonPrograms")
 $userStartMenuPath = [Environment]::GetFolderPath("Programs")
 
 $userFontPath = $ENV:LOCALAPPDATA + "/Microsoft/Windows/Fonts"
+
 #endregion VARIABLES
+
+#region CLASSES
+
+class File {
+    [string]$InstallationCategory
+    [string]$DownloadSource
+    [string]$OutFile
+
+    [string]$Url
+
+    [string]$Repository
+    [string]$AssetNamePattern
+    
+    [string]$WingetID
+    [bool]$WingetInteractive = $false
+    
+    File(        
+        [string]$installationCategory,
+        [string]$downloadSource,
+        [string]$outFile
+    ) {
+        $this.InstallationCategory = $installationCategory
+        $this.DownloadSource = $downloadSource
+        $this.OutFile = $outFile
+    }  
+    
+    [void] InstallFromPackageManager() {
+        if ($this.WingetInteractive -eq $true) {
+            winget install -e --id $this.WingetID -i
+        }
+        else {
+            winget install -e --id $this.WingetID            
+        }
+    }
+
+    [void] GetFromWeb() {
+        Invoke-WebRequest -UserAgent "Wget" -Uri $this.Url -OutFile $this.OutFile
+    }
+
+    [void] GetFromLatestGitHubRelases() {
+        $releasesUri = "https://api.github.com/repos/$this.Repository/releases/latest"
+        $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $this.AssetNamePattern
+        $assetUrl = $asset.browser_download_url
+        
+        this.GetFromWeb($assetUrl, $this.OutFile)
+    }
+}
+
+#endregion CLASSES
 
 #region FUNCTIONS
 function CreateDirectory {
@@ -16,32 +66,6 @@ function CreateDirectory {
         [string]$Name
     )  
     return New-Item -Path $Path -Name $Name -ItemType Directory
-}
-
-function GetFile {
-    param (
-        [string]$URL,
-        [string]$OutFile
-    )
-    Write-Host "Downloading '$OutFile' from $URL..."
-    Invoke-WebRequest -UserAgent "Wget" -Uri $URL -OutFile $downloadLocation/$OutFile
-    return "$downloadLocation/$OutFile"
-    Write-Host "Downloaded '$OutFile'!"
-}
-
-function GetGithubLatestReleaseAsset {
-    param (
-        [string]$Repository,
-        [string]$AssetNamePattern,
-        [string]$OutFile
-    )
-    $releasesUri = "https://api.github.com/repos/$Repository/releases/latest"
-    $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $AssetNamePattern
-    Write-Host "Fetching latest Asset '$asset' from '$Repository'..."
-    $assetUrl = $asset.browser_download_url
-
-    return GetFile -URL $assetUrl -OutFile $OutFile
-    Write-Host "Fetched '$asset' as '$OutFile'!"
 }
 
 function CreateShortcut {
@@ -80,44 +104,74 @@ function CreateShortcutStartAll {
 
 #endregion FUNCTIONS
 
+$files = [System.Collections.ArrayList]@()
+
 # Powershell
-winget install -e --id Microsoft.PowerShell --source winget
+$powershell = [File]::new("basic", "winget", "")
+$powershell.WingetID = "Microsoft.PowerShell"
+[void]$files.Add($powershell)
 
 # Windows Terminal
-winget install -e --id Microsoft.WindowsTerminal --source msstore
-
-# Java
-winget install -e --id Microsoft.OpenJDK.17
+$terminal = [File]::new("basic", "winget", "")
+$terminal.WingetID = "Microsoft.WindowsTerminal"
+[void]$files.Add($terminal)
 
 #region MAIN APPS
 
 # Google Chrome
-winget install -e --id Google.Chrome
+$chrome = [File]::new("basic", "winget", "")
+$chrome.WingetID = "Google.Chrome"
+[void]$files.Add($chrome)
 
 # Spotify
-winget install -e --id Spotify.Spotify
-
+$spotify = [File]::new("basic", "winget", "")
+$spotify.WingetID = "Spotify.Spotify"
+[void]$files.Add($spotify)
+    
 # Discord
-winget install -e --id Discord.Discord
-
+$discord = [File]::new("full", "winget", "")
+$discord.WingetID = "Discord.Discord"
+[void]$files.Add($discord)
+    
 # Drive File Stream
-winget install -e --id Google.Drive
-
+$drive = [File]::new("full", "winget", "")
+$drive.WingetID = "Google.Drive"
+[void]$files.Add($drive)
+    
 # Rambox
-$url = "https://rambox.app/api/download?os=windows"
-$file = GetFile `
-    -URL $url `
-    -OutFile 'Rambox-installer.exe'
-
-Invoke-Item $file
-
+$rambox = [File]::new("full", "web", "Install-Rambox.exe")
+$rambox.Url = "https://rambox.app/api/download?os=windows"
+[void]$files.Add($rambox)
+    
 #endregion MAIN APPS
 
 #region UTILITIES
 
-# 7Zip
-winget install -e --id 7zip.7zip
+# Java
+$java = [File]::new("basic", "winget", "")
+$java.WingetID = "Microsoft.OpenJDK.17"
+[void]$files.Add($java)
 
+# 7Zip
+$7zip = [File]::new("basic", "winget", "")
+$7zip.WingetID = "7zip.7zip"
+[void]$files.Add($7zip)
+
+# VLC Media Player
+$vlc = [File]::new("full", "winget", "")
+$vlc.WingetID = "VideoLAN.VLC"
+[void]$files.Add($vlc)
+
+# Adobe Acrobat Reader DC
+$pdfReader = [File]::new("full", "winget", "")
+$pdfReader.WingetID = "Adobe.AdobeAcrobatReaderDC"
+[void]$files.Add($pdfReader)
+
+# powertoys
+$powertoys = [File]::new("full", "winget", "")
+$powertoys.WingetID = "Microsoft.PowerToys"
+[void]$files.Add($powertoys)
+        
 #Geek Uninstaller
 $file = GetFile `
     -URL "https://geekuninstaller.com/geek.zip" `
@@ -126,28 +180,20 @@ $file = GetFile `
 $installPath = CreateDirectory `
     -Path $programsPath `
     -Name "Geek Uninstaller"
-
+    
 Expand-Archive `
     -Path $file `
     -DestinationPath $installPath
-
+    
 CreateShortcutStartAll `
     -SourceFilePath "$installPath/geek.exe" `
     -ShortcutName "Geek Uninstaller"
 
-# VLC Media Player
-winget install -e --id VideoLAN.VLC
-
-# Adobe Acrobat Reader DC
-winget install -e --id Adobe.AdobeAcrobatReaderDC
-
-# powertoys
-winget install -e --id Microsoft.PowerToys
 
 #endregion UTILITIES
-
+    
 #region EDITING
-
+    
 # paint.net
 $file = GetFile `
     -URL "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip" `
@@ -158,27 +204,21 @@ Expand-Archive -Path $file -DestinationPath $downloadLocation
 Invoke-Item $(Get-ChildItem -Path $downloadLocation -Filter *.exe -Include "paint.net" | Select-Object -First 1)
 
 # inkscape
-winget install -e --id Inkscape.Inkscape
-
+$inkscape = [File]::new("full", "winget", "")
+$inkscape.WingetID = "Inkscape.Inkscape"
+[void]$files.Add($inkscape)        
+    
 # gimp
-winget install -e --id GIMP.GIMP
-
+$gimp = [File]::new("full", "winget", "")
+$gimp.WingetID = "GIMP.GIMP"
+[void]$files.Add($gimp)
+        
 # audacity
-winget install -e --id Audacity.Audacity
-
+$audacity = [File]::new("full", "winget", "")
+$audacity.WingetID = "Audacity.Audacity"
+[void]$files.Add($audacity)
+        
 #endregion EDITING
-
-#region FONTS
- 
-# FiraCode Nerd
-$file = GetGithubLatestReleaseAsset `
-    -Repository 'ryanoasis/nerd-fonts' `
-    -AssetNamePattern 'FiraCode.zip' `
-    -OutFile 'FiraCodeNerd-latest.zip'
-    
-unzip -o -j $file "/*.otf" -d $userFontPath
-    
-#endregion FONTS
 
 #region CUSTOMIZATION
 
@@ -187,13 +227,16 @@ $file = GetFile `
     -URL "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" `
     -OutFile 'InstallLogitechGhub.exe'
 Invoke-Item $file
-
-
+    
 # Corsair iCUE
-winget install -e --id Corsair.iCUE.4
+$icue = [File]::new("full", "winget", "")
+$icue.WingetID = "Corsair.iCUE.4"
+[void]$files.Add($icue)
 
 # Rainmeter
-winget install -e --id Rainmeter.Rainmeter
+$rainmeter = [File]::new("full", "winget", "")
+$rainmeter.WingetID = "Rainmeter.Rainmeter"
+[void]$files.Add($rainmeter)
 
 # Spicetify
 Invoke-WebRequest "https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.ps1" | Invoke-Expression
@@ -203,25 +246,23 @@ Invoke-WebRequest "https://raw.githubusercontent.com/khanhas/spicetify-cli/maste
 #region AUDIO
 
 # EarTrumpet
-winget install -e --id File-New-Project.EarTrumpet
+$eartrumpet = [File]::new("full", "winget", "")
+$eartrumpet.WingetID = "File-New-Project.EarTrumpet"
+[void]$files.Add($eartrumpet)
 
-# Equalizer APO
+# BEACN App (Only usable with BEACN Products)
+$url = "https://beacn-app-public-download.s3.us-west-1.amazonaws.com/BEACN+Setup+V1.0.134.0.exe"
 $file = GetFile `
-    -URL "https://sourceforge.net/projects/equalizerapo/files/latest/Download"  `
-    -OutFile 'InstallEqualizerAPO-latest.exe'
+    -URL $url`
+-OutFile "install-beacn-app.exe"
 Invoke-Item $file    
 
-# VoiceMeeter Potato
-winget install -e --id VB-Audio.VoicemeeterPotato
-
-# Virtual Audio Cable
+# Equalizer APO
+$url = "https://sourceforge.net/projects/equalizerapo/files/latest/Download"
 $file = GetFile `
-    -URL "https://Download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" `
-    -OutFile 'VBCABLE_Driver_Pack.zip'
-
-$location = "$downloadLocation/Install_VBCABLE"
-unzip $file -d $location
-Invoke-Item "$location/VBCABLE_Setup_x64.exe"
+    -URL $url  `
+    -OutFile 'InstallEqualizerAPO-latest.exe'
+Invoke-Item $file    
 
 #region VST Plugins
 
@@ -239,27 +280,54 @@ unzip -o -j $file "bin/vst/*" -d $(CreateDirectory -Path $programsPath -Name VST
 
 #region DEVELOPMENT
 
-# Git (interactive mode)
-winget install -e --id Git.Git -i
+# Git
+$git = [File]::new("basic", "winget", "")
+$git.WingetID = "Git.Git"
+$git.WingetInteractive = $true
+[void]$files.Add($git)
 
 # Github CLI
-winget install -e --id GitHub.cli
+$gh = [File]::new("basic", "winget", "")
+$gh.WingetID = "GitHub.cli"
+$gh.WingetInteractive = $true
+[void]$files.Add($gh)
 
-# Visual Studio Code (interactive mode)
-winget install -e --id Microsoft.VisualStudioCode -i
+# Visual Studio Code
+$vscode = [File]::new("basic", "winget", "")
+$vscode.WingetID = "Microsoft.VisualStudioCode"
+$vscode.WingetInteractive = $true
+[void]$files.Add($vscode)
 
 # KeepassXC
-winget install -e --id KeePassXCTeam.KeePassXC
+$keepass = [File]::new("basic", "winget", "")
+$keepass.WingetID = "KeePassXCTeam.KeePassXC"
+[void]$files.Add($keepass)
 
 # DevToys
-winget install -e --id 9PGCV4V3BK4W
+$devtoys = [File]::new("basic", "winget", "")
+$devtoys.WingetID = "9PGCV4V3BK4W"
+[void]$files.Add($devtoys)
 
 #endregion DEVELOPMENT
+
+#region FONTS
+ 
+# FiraCode Nerd
+$file = GetGithubLatestReleaseAsset `
+    -Repository 'ryanoasis/nerd-fonts' `
+    -AssetNamePattern 'FiraCode.zip' `
+    -OutFile 'FiraCodeNerd-latest.zip'
+    
+unzip -o -j $file "/*.otf" -d $userFontPath
+    
+#endregion FONTS
 
 #region GAMING
 
 # Steam
-winget install -e --id Valve.Steam
+$steam = [File]::new("full", "winget", "")
+$steam.WingetID = "Valve.Steam"
+[void]$files.Add($steam)
 
 # MultiMC (Minecraft Instance Manager)
 $file = GetFile `
@@ -273,6 +341,38 @@ unzip $file -d $programsPath
 #region STREAMING
 
 # OBS Studio
-winget install -e --id OBSProject.OBSStudio
+$obs = [File]::new("full", "winget", "")
+$obs.WingetID = "OBSProject.OBSStudio"
+[void]$files.Add($obs)
+
+# Stream Deck
+$streamdeck = [File]::new("full", "winget", "")
+$streamdeck.WingetID = "Elgato.StreamDeck"
+[void]$files.Add($streamdeck)
 
 #endregion STREAMING
+
+#region INSTALL
+$install = "full"
+
+foreach ($file in $files) {
+    $cond = $file.InstallationCategory -eq $install
+    
+    if ($install -eq "full") {
+        $cond = $file.InstallationCategory -eq "basic" -or "full"
+    }
+
+    if ($cond) {        
+        switch ($file.DownloadSource) {
+            "web" { $file.GetFromWeb() }
+            "winget" { $file.InstallFromPackageManager() }
+            "github" { $file.GetFromLatestGitHubRelases() }
+            Default {
+                $source = $file.DownloadSource
+                Write-Host "Download Source '$source' undefined"
+            }
+        }
+    }
+}
+
+#endregion INSTALL
