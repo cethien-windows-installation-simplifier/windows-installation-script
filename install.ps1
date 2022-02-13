@@ -223,10 +223,9 @@ $audacity.WingetID = "Audacity.Audacity"
 #region CUSTOMIZATION
 
 # Logitech G Hub
-$file = GetFile `
-    -URL "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe" `
-    -OutFile 'InstallLogitechGhub.exe'
-Invoke-Item $file
+$lghub = [File]::new("full", "web", "Install-LogitechGhub.exe")
+$lghub.Url = "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe"
+[void]$files.Add($lghub)
     
 # Corsair iCUE
 $icue = [File]::new("full", "winget", "")
@@ -251,18 +250,14 @@ $eartrumpet.WingetID = "File-New-Project.EarTrumpet"
 [void]$files.Add($eartrumpet)
 
 # BEACN App (Only usable with BEACN Products)
-$url = "https://beacn-app-public-download.s3.us-west-1.amazonaws.com/BEACN+Setup+V1.0.134.0.exe"
-$file = GetFile `
-    -URL $url`
--OutFile "install-beacn-app.exe"
-Invoke-Item $file    
+$beacnapp = [File]::new("full", "web", "Install-BeacnApp.exe")
+$beacnapp.Url = "https://beacn-app-public-download.s3.us-west-1.amazonaws.com/BEACN+Setup+V1.0.134.0.exe"
+[void]$files.Add($beacnapp)
 
 # Equalizer APO
-$url = "https://sourceforge.net/projects/equalizerapo/files/latest/Download"
-$file = GetFile `
-    -URL $url  `
-    -OutFile 'InstallEqualizerAPO-latest.exe'
-Invoke-Item $file    
+$eqApo = [File]::new("full", "web", "Install-EqualizerAPO.exe")
+$eqApo.Url = "https://sourceforge.net/projects/equalizerapo/files/latest/Download"
+[void]$files.Add($eqApo)
 
 #region VST Plugins
 
