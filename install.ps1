@@ -11,12 +11,21 @@ $userStartMenuPath = [Environment]::GetFolderPath("Programs")
 $userFontPath = $ENV:LOCALAPPDATA + "/Microsoft/Windows/Fonts"
 
 #endregion VARIABLES
-$files = Get-Content ".\data.json" | ConvertFrom-Json
+$files = Get-Content ".\files.json" | ConvertFrom-Json
 
 foreach ($item in $files) {
     switch ($item.Type) {
         "WebFile" {
-            $webfile = [WebFile]$item
+            $file = [WebFile]$item
+            Write-Host $file.Url
+        }
+        "WingetFile" {
+            $file = [WingetFile]$item
+            Write-Host $file.Id
+        }
+        "GitHubAssetFile" {
+            $file = [GitHubAssetFile]$item
+            Write-Host $file.Repository
         }
     }
 }

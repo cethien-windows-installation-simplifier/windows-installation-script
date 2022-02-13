@@ -92,20 +92,27 @@ $geek.OutFile = "geekUnistaller.zip"
 #region EDITING
     
 # paint.net
-$url = "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip"
-$paintnet = [WebFile]::new("basic", $url, "paintNET.zip")
+$paintnet = [WebFile]::new()
+$paintnet.Url = "https://www.dotpdn.com/files/paint.net.4.3.7.install.anycpu.web.zip"
+$paintnet.OutFile = "paintNET.zip"
 [void]$files.Add($paintnet)
 
 # inkscape
-$inkscape = [WingetFile]::new("full", "Inkscape.Inkscape", $false)
+$inkscape = [WingetFile]::new()
+$inkscape.InstallationCategory = "full"
+$inkscape.Id = "Inkscape.Inkscape"
 [void]$files.Add($inkscape)        
     
 # gimp
-$gimp = [WingetFile]::new("full", "GIMP.GIMP", $false)
+$gimp = [WingetFile]::new()
+$gimp.InstallationCategory = "full" 
+$gimp.Id = "GIMP.GIMP" 
 [void]$files.Add($gimp)
         
 # audacity
-$audacity = [WingetFile]::new("full", "Audacity.Audacity", $false)
+$audacity = [WingetFile]::new()
+$audacity.InstallationCategory = "full"
+$audacity.Id = "Audacity.Audacity"
 [void]$files.Add($audacity)
         
 #endregion EDITING
@@ -113,16 +120,22 @@ $audacity = [WingetFile]::new("full", "Audacity.Audacity", $false)
 #region CUSTOMIZATION
 
 # Logitech G Hub
-$url = "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe"
-$lghub = [WebFile]::new("full", $url, "Install-LogitechGhub.exe")
+$lghub = [WebFile]::new()
+$lghub.InstallationCategory = "full"
+$lghub.Url = "https://download01.logi.com/web/ftp/pub/techsupport/gaming/lghub_installer.exe"
+$lghub.OutFile = "Install-LogitechGhub.exe"
 [void]$files.Add($lghub)
     
 # Corsair iCUE
-$icue = [WingetFile]::new("full", "Corsair.iCUE.4", $false)
+$icue = [WingetFile]::new()
+$icue.InstallationCategory = "full"
+$icue.Id = "Corsair.iCUE.4"
 [void]$files.Add($icue)
 
 # Rainmeter
-$rainmeter = [WingetFile]::new("full", "Rainmeter.Rainmeter", $false)
+$rainmeter = [WingetFile]::new()
+$rainmeter.InstallationCategory = "full"
+$rainmeter.Id = "Rainmeter.Rainmeter"
 [void]$files.Add($rainmeter)
 
 # Spicetify
@@ -133,25 +146,33 @@ $rainmeter = [WingetFile]::new("full", "Rainmeter.Rainmeter", $false)
 #region AUDIO
 
 # EarTrumpet
-$eartrumpet = [WingetFile]::new("full", "File-New-Project.EarTrumpet", $false)
+$eartrumpet = [WingetFile]::new()
+$eartrumpet.InstallationCategory = "full"
+$eartrumpet.Id = "File-New-Project.EarTrumpet"
 [void]$files.Add($eartrumpet)
 
 # BEACN App (Only usable with BEACN Products)
-$beacnapp = [WebFile]::new("full", "web", "Install-BeacnApp.exe")
+$beacnapp = [WebFile]::new()
+$beacnapp.InstallationCategory = "full"
 $beacnapp.Url = "https://beacn-app-public-download.s3.us-west-1.amazonaws.com/BEACN+Setup+V1.0.134.0.exe"
+$beacnapp.OutFile = "Install-BeacnApp.exe"
 [void]$files.Add($beacnapp)
 
 # Equalizer APO
-$eqApo = [WebFile]::new("full", "web", "Install-EqualizerAPO.exe")
+$eqApo = [WebFile]::new()
+$eqApo.InstallationCategory = "full"
 $eqApo.Url = "https://sourceforge.net/projects/equalizerapo/files/latest/Download"
+$eqApo.OutFile = "Install-EqualizerAPO.exe"
 [void]$files.Add($eqApo)
 
 #region VST Plugins
 
 # Noise Suppresion VST
-$repo = "werman/noise-suppression-for-voice"
-$assetName = "windows_rnnoise_bin_x64*.zip"
-$rnnoise = [GitHubAssetFile]::new("full", $repo, $assetName, "rnnoise-latest.zip")
+$rnnoise = [GitHubAssetFile]::new()
+$rnnoise.InstallationCategory = "full"
+$rnnoise.Repository = "werman/noise-suppression-for-voice"
+$rnnoise.AssetNamePattern = "windows_rnnoise_bin_x64*.zip"
+$rnnoise.OutFile = "rnnoise-latest.zip"
 [void]$files.Add($rnnoise)
 
 #endregion VST Plugins
@@ -161,23 +182,30 @@ $rnnoise = [GitHubAssetFile]::new("full", $repo, $assetName, "rnnoise-latest.zip
 #region DEVELOPMENT
 
 # Git
-$git = [WingetFile]::new("basic", "Git.Git", $true)
+$git = [WingetFile]::new()
+$git.Id = "Git.Git"
+$git.InteractiveMode = $true
 [void]$files.Add($git)
 
 # Github CLI
-$gh = [WingetFile]::new("basic", "GitHub.cli", $false)
+$gh = [WingetFile]::new()
+$gh.Id = "GitHub.cli"
 [void]$files.Add($gh)
 
 # Visual Studio Code
-$vscode = [WingetFile]::new("basic", "Microsoft.VisualStudioCode", $true)
+$vscode = [WingetFile]::new()
+$vscode.Id = "Microsoft.VisualStudioCode"
+$vscode.InteractiveMode = $true
 [void]$files.Add($vscode)
 
 # KeepassXC
-$keepass = [WingetFile]::new("basic", "KeePassXCTeam.KeePassXC", $false)
+$keepass = [WingetFile]::new()
+$keepass.Id = "KeePassXCTeam.KeePassXC"
 [void]$files.Add($keepass)
 
 # DevToys
-$devtoys = [WingetFile]::new("basic", "9PGCV4V3BK4W", $false)
+$devtoys = [WingetFile]::new()
+$devtoys.Id = "9PGCV4V3BK4W"
 [void]$files.Add($devtoys)
 
 #endregion DEVELOPMENT
@@ -185,9 +213,11 @@ $devtoys = [WingetFile]::new("basic", "9PGCV4V3BK4W", $false)
 #region FONTS
  
 # FiraCode Nerd
-$repo = "ryanoasis/nerd-fonts"
-$assetName = "FiraCode.zip"
-$firacode = [GitHubAssetFile]::new("full", $repo, $assetName, "FiraCodeNerd-latest.zip")
+$firacode = [GitHubAssetFile]::new()
+$firacode.InstallationCategory = "full" 
+$firacode.Repository = "ryanoasis/nerd-fonts"
+$firacode.AssetNamePattern = "FiraCode.zip"
+$firacode.OutFile = "FiraCodeNerd-latest.zip"
 [void]$files.Add($firacode)
 
 #endregion FONTS
@@ -195,12 +225,16 @@ $firacode = [GitHubAssetFile]::new("full", $repo, $assetName, "FiraCodeNerd-late
 #region GAMING
 
 # Steam
-$steam = [WingetFile]::new("full", "Valve.Steam", $false)
+$steam = [WingetFile]::new()
+$steam.InstallationCategory = "full"
+$steam.Id = "Valve.Steam"
 [void]$files.Add($steam)
 
 # MultiMC (Minecraft Instance Manager)
-$url = "https://files.multimc.org/downloads/mmc-stable-win32.zip"
-$multimc = [WebFile]::new("full", $url, "multiMC-latest-stable.zip")
+$multimc = [WebFile]::new()
+$multimc.InstallationCategory = "full"
+$multimc.Url = "https://files.multimc.org/downloads/mmc-stable-win32.zip"
+$multimc.OutFile = "multiMC-latest-stable.zip"
 [void]$files.Add($multimc)
 
 #endregion GAMING
@@ -208,15 +242,19 @@ $multimc = [WebFile]::new("full", $url, "multiMC-latest-stable.zip")
 #region STREAMING
 
 # OBS Studio
-$obs = [WingetFile]::new("full", "OBSProject.OBSStudio", $false)
+$obs = [WingetFile]::new()
+$obs.InstallationCategory = "full"
+$obs.Id = "OBSProject.OBSStudio"
 [void]$files.Add($obs)
 
 # Stream Deck
-$streamdeck = [WingetFile]::new("full", "Elgato.StreamDeck", $false)
+$streamdeck = [WingetFile]::new()
+$streamdeck.InstallationCategory = "full"
+$streamdeck.Id = "Elgato.StreamDeck"
 [void]$files.Add($streamdeck)
 
 #endregion STREAMING
 
 #endregion APPS
 
-$files | ConvertTo-Json | Out-File "data.json"
+$files | ConvertTo-Json | Out-File "files.json"
