@@ -1,3 +1,6 @@
+# script to create data.json
+# THIS IS TEMPORARY, UI NEEDS TO BE MADE THAT GENERATES DATA!
+
 . .\common.ps1
 
 $files = [System.Collections.ArrayList]@()
@@ -5,34 +8,44 @@ $files = [System.Collections.ArrayList]@()
 #region APPS
 
 # Powershell
-$powershell = [WingetFile]::new("basic", "Microsoft.PowerShell", $false)
+$powershell = [WingetFile]::new()
+$powershell.Id = "Microsoft.PowerShell"
 [void]$files.Add($powershell)
 
 # Windows Terminal
-$terminal = [WingetFile]::new("basic", "Microsoft.WindowsTerminal", $false)
+$terminal = [WingetFile]::new()
+$terminal.Id = "Microsoft.WindowsTerminal"
 [void]$files.Add($terminal)
 
 #region MAIN APPS
 
 # Google Chrome
-$chrome = [WingetFile]::new("basic", "Google.Chrome", $false)
+$chrome = [WingetFile]::new()
+$chrome.Id = "Google.Chrome"
 [void]$files.Add($chrome)
 
 # Spotify
-$spotify = [WingetFile]::new("basic", "Spotify.Spotify", $false)
+$spotify = [WingetFile]::new()
+$spotify.Id = "Spotify.Spotify"
 [void]$files.Add($spotify)
     
 # Discord
-$discord = [WingetFile]::new("full", "Discord.Discord", $false)
+$discord = [WingetFile]::new()
+$discord.InstallationCategory = "full"
+$discord.Id = "Discord.Discord"
 [void]$files.Add($discord)
     
 # Drive File Stream
-$drive = [WingetFile]::new("full", "Google.Drive", $false)
+$drive = [WingetFile]::new()
+$drive.InstallationCategory = "full"
+$drive.Id = "Google.Drive"
 [void]$files.Add($drive)
     
 # Rambox
-$url = "https://rambox.app/api/download?os=windows"
-$rambox = [WebFile]::new("full", $url, "Install-Rambox.exe")
+$rambox = [WebFile]::new()
+$rambox.InstallationCategory = "full"
+$rambox.Url = "https://rambox.app/api/download?os=windows"
+$rambox.OutFile = "Install-Rambox.exe"
 [void]$files.Add($rambox)
     
 #endregion MAIN APPS
@@ -40,28 +53,38 @@ $rambox = [WebFile]::new("full", $url, "Install-Rambox.exe")
 #region UTILITIES
 
 # Java
-$java = [WingetFile]::new("basic", "Microsoft.OpenJDK.17", $false)
+$java = [WingetFile]::new()
+$java.Id = "Microsoft.OpenJDK.17"
 [void]$files.Add($java)
 
 # 7Zip
-$7zip = [WingetFile]::new("basic", "7zip.7zip", $false)
+$7zip = [WingetFile]::new()
+$7zip.Id = "7zip.7zip"
 [void]$files.Add($7zip)
 
 # VLC Media Player
-$vlc = [WingetFile]::new("full", "VideoLAN.VLC", $false)
+$vlc = [WingetFile]::new()
+$vlc.InstallationCategory = "full"
+$vlc.Id = "VideoLAN.VLC"
 [void]$files.Add($vlc)
 
 # Adobe Acrobat Reader DC
-$pdfReader = [WingetFile]::new("full", "Adobe.AdobeAcrobatReaderDC", $false)
+$pdfReader = [WingetFile]::new()
+$pdfReader.InstallationCategory = "full"
+$pdfReader.Id = "Adobe.AdobeAcrobatReaderDC"
 [void]$files.Add($pdfReader)
 
 # powertoys
-$powertoys = [WingetFile]::new("full", "Microsoft.PowerToys", $false)
+$powertoys = [WingetFile]::new()
+$powertoys.InstallationCategory = "full"
+$powertoys.Id = "Microsoft.PowerToys"
 [void]$files.Add($powertoys)
 
 #Geek Uninstaller
-$url = "https://geekuninstaller.com/geek.zip"
-$geek = [WebFile]::new("full", $url, "geekUnistaller.zip")
+$geek = [WebFile]::new()
+$geek.InstallationCategory = "full"
+$geek.Url = "https://geekuninstaller.com/geek.zip"
+$geek.OutFile = "geekUnistaller.zip"
 [void]$files.Add($geek)
 
 #endregion UTILITIES

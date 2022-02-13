@@ -6,14 +6,20 @@
 $downloadLocation = $ENV:USERPROFILE + "/Downloads"
 $programsPath = $ENV:ProgramFiles
 $commonStartMenuPath = [Environment]::GetFolderPath("CommonPrograms")
-$userStartMenuPath = [Environment]::GetFolderPath("Programs")
 
+$userStartMenuPath = [Environment]::GetFolderPath("Programs")
 $userFontPath = $ENV:LOCALAPPDATA + "/Microsoft/Windows/Fonts"
 
 #endregion VARIABLES
+$files = Get-Content ".\data.json" | ConvertFrom-Json
 
-$files = Get-Content -Raw -Path ".\data.json" | ConvertFrom-Json
-$files
+foreach ($item in $files) {
+    switch ($item.Type) {
+        "WebFile" {
+            $webfile = [WebFile]$item
+        }
+    }
+}
 
 
 #region INSTALL

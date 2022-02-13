@@ -4,26 +4,16 @@
 
 class File {
     [string]$Type
-    [string]$InstallationCategory
+    [string]$InstallationCategory = "basic"
     
-    File([string]$installationCategory) {
-        $this.Type = $this
-        $this.InstallationCategory = $installationCategory
-    }  
+    File() {
+        $this.Type = $this        
+    }
 }
 
 class WebFile : File {
     [string]$Url
     [string]$OutFile
-    
-    WebFile(        
-        [string]$installationCategory,
-        [string]$url,
-        [string]$outFile
-    ) : base($installationCategory) {
-        $this.Url = $url
-        $this.OutFile = $outFile
-    } 
         
     [void] GetFile() {
         Invoke-WebRequest -UserAgent "Wget" -Uri $this.Url -OutFile $this.OutFile
@@ -34,18 +24,7 @@ class GitHubAssetFile : File {
     [string]$Repository
     [string]$AssetNamePattern
     [string]$OutFile
-        
-    GitHubAssetFile(        
-        [string]$installationCategory,
-        [string]$repository,
-        [string]$assetNamePattern,
-        [string]$outFile
-    ) : base($installationCategory) {
-        $this.Repository = $repository
-        $this.AssetNamePattern = $assetNamePattern
-        $this.OutFile = $outFile
-    } 
-            
+           
     [void] GetAssetFromLatestRelase() {
         $releasesUri = "https://api.github.com/repos/$this.Repository/releases/latest"
         $asset = (Invoke-WebRequest $releasesUri | ConvertFrom-Json).assets | Where-Object name -like $this.AssetNamePattern
@@ -57,18 +36,8 @@ class GitHubAssetFile : File {
         
 class WingetFile : File {
     [string]$Id
-    [bool]$InteractiveMode
-            
-    WingetFile(        
-        [string]$installationCategory,
-        [string]$id,
-        [bool]$interactiveMode
-    ) 
-    : base($installationCategory) {
-        $this.Id = $id
-        $this.InteractiveMode = $interactiveMode
-    } 
-                
+    [bool]$InteractiveMode = $false
+                 
     [void] Install() {
         if ($this.InteractiveMode -eq $true) {
             winget install -e --id $this.Id -i
