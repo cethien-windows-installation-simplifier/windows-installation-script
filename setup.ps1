@@ -86,10 +86,15 @@ foreach ($item in $files) {
     if ($cond) {        
         switch ($item.Type) {
             "WebFile" {
-                Write-Host $item.Url
+                Write-Host "Todo: WEBINSTALLATION + ZIP HANDLING"
             }
             "WingetFile" {
-                Write-Host $item.Id
+                if ($item.InteractiveMode = $true) {
+                    winget install -e --id $item.Id -i
+                }
+                else {
+                    winget install -e --id $item.Id
+                }
             }
         }
     }   
