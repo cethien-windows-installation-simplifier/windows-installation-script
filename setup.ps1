@@ -76,6 +76,21 @@ do {
 
 Write-Host "`nRunning Installation...`n"
 
+function WingetInstall {
+    param (
+        [string]$Id,
+        [bool]$InteractiveMode
+    )
+
+    $cmd = "winget install -e --id $Id"
+
+    if ($InteractiveMode -eq $true) {
+        $cmd += " -i"
+    }
+    
+    $cmd | Invoke-Expression
+}
+
 foreach ($item in $files) {
 
     switch ($response) {
@@ -89,12 +104,7 @@ foreach ($item in $files) {
                 Write-Host "Todo: WEBINSTALLATION + ZIP HANDLING"
             }
             "WingetFile" {
-                if ($item.InteractiveMode = $true) {
-                    winget install -e --id $item.Id -i
-                }
-                else {
-                    winget install -e --id $item.Id
-                }
+                WingetInstall -Id $item.Id -InteractiveMode $item.InteractiveMode
             }
         }
     }   
