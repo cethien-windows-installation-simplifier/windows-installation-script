@@ -1,5 +1,63 @@
 . ./common.ps1
 
+#region FUNCTIONS
+function CreateDirectory {
+    param (
+        [string]$Path,
+        [string]$Name
+    )  
+    return New-Item -Path $Path -Name $Name -ItemType Directory
+}
+
+function RunFile {
+    param (
+        [string]$FileName
+    )
+
+    Invoke-WebRequest "https://raw.githubusercontent.com/cethien-windows-installation-simplifier/windows-install-scripts/main/$FileName" | Invoke-Expression
+}
+
+function ReloadPath {
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    Write-Host 'PATH refreshed'
+}
+
+function CreateShortcut {
+    param (
+        [string]$SourceFilePath,
+        [string]$ShortcutLocation,
+        [string]$FileName
+    )
+    $ShortcutPath = "$ShortcutLocation\$FileName.lnk"
+    $WScriptObj = New-Object -ComObject ("WScript.Shell")
+    $shortcut = $WscriptObj.CreateShortcut($ShortcutPath)
+    $shortcut.TargetPath = $SourceFilePath
+    $shortcut.Save()
+    Write-Host "Creating Shortcut '$ShortcutName' Done"
+    return $SourceFilePath
+}
+
+function CreateShortcutStartUser {
+    param (
+        [string]$SourceFilePath,
+        [string]$ShortcutName
+    )
+        
+    Write-Host "Creating User Shortcut '$ShortcutName' in start..."
+    return CreateShortcut -SourceFilePath $SourceFilePath -ShortcutLocation $userStartMenuPath -FileName $ShortcutName
+}
+
+function CreateShortcutStartAll {
+    param (
+        [string]$SourceFilePath,
+        [string]$ShortcutName
+    )
+    Write-Host "Creating Shortcut '$ShortcutName' in start..." 
+    return CreateShortcut -SourceFilePath $SourceFilePath -ShortcutLocation $commonStartMenuPath -FileName $ShortcutName
+}
+
+#endregion FUNCTIONS
+
 #region INSTALLATION
 
 $filePath = ".\files.json"
@@ -18,7 +76,7 @@ do {
 
 $files = Get-Content $filePath | ConvertFrom-Json
 
-Write-Host "Running Installation..."
+# Write-Host "Running Installation..."
 
 foreach ($item in $files) {    
     switch ($item.Type) {
@@ -30,14 +88,10 @@ foreach ($item in $files) {
             $file = [WingetFile]$item
             Write-Host "Winget ID: " $file.Id
         }
-        "GitHubAssetFile" {
-            $file = [GitHubAssetFile]$item
-            Write-Host "Github Repo: " $file.Repository
-        }
     }
 }
 
-Write-Host "Installation done!"
+# Write-Host "Installation done!"
 
 #endregion INSTALLATION
 
@@ -58,7 +112,7 @@ if ($response -eq 0) {
     ReloadPath
     
     Write-Host "Running customization..."
-    RunFromRaw -FileName "run-customize.ps1"
+    RunFile -FileName "run-customize.ps1"
     Write-Host "Customization done!"
     
     #region Update Script
