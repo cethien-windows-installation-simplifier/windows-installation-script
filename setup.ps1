@@ -2,6 +2,8 @@
 
 #region INSTALLATION
 
+$filePath = ".\files.json"
+
 # prompt for installation options
 $title = "Hi!"
 $msg = "Before we start, do you wish to install your quick basic workspace stuff`
@@ -14,7 +16,7 @@ do {
 } until ($response -eq 0 -or 1)
 
 
-$files = Get-Content ".\files.json" | ConvertFrom-Json
+$files = Get-Content $filePath | ConvertFrom-Json
 
 Write-Host "Running Installation..."
 
