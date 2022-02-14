@@ -65,7 +65,7 @@ $files = $json | ConvertFrom-Json
 $title = "Hi!"
 $msg = "Before we start, do you wish to install your quick basic workspace stuff`
 or make a full installation for every autistic programm, setting & customization?"
-$options = '&Quick', '&Full'
+$options = '&Basic', '&Full'
 $default = 0
 
 do {
@@ -74,20 +74,28 @@ do {
 
 
 
-# Write-Host "Running Installation..."
+Write-Host "`nRunning Installation...`n"
 
-foreach ($item in $files) {    
-    switch ($item.Type) {
-        "WebFile" {
-            Write-Host $item.Url
-        }
-        "WingetFile" {
-            Write-Host $item.Id
-        }
+foreach ($item in $files) {
+
+    switch ($response) {
+        0 { $cond = $item.InstallationCategory -eq "basic" }
+        1 { $cond = $item.InstallationCategory -eq "basic" -or "full" }
     }
+
+    if ($cond) {        
+        switch ($item.Type) {
+            "WebFile" {
+                Write-Host $item.Url
+            }
+            "WingetFile" {
+                Write-Host $item.Id
+            }
+        }
+    }   
 }
 
-# Write-Host "Installation done!"
+Write-Host "`nInstallation done!`n"
 
 #endregion INSTALLATION
 
@@ -107,9 +115,9 @@ if ($response -eq 0) {
     
     ReloadPath
     
-    Write-Host "Running customization..."
+    Write-Host "`nRunning customization...`n"
     RunFile -FileName "run-customize.ps1"
-    Write-Host "Customization done!"
+    Write-Host "`nCustomization done!`n"
     
     #region Update Script
     
