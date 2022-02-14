@@ -3,6 +3,7 @@
 
 . .\common.ps1
 
+# create array
 $files = [System.Collections.ArrayList]@()
 
 #region APPS
@@ -205,6 +206,7 @@ $keepass.Id = "KeePassXCTeam.KeePassXC"
 
 # DevToys
 $devtoys = [WingetFile]::new()
+$devtoys.InstallationCategory = "full"
 $devtoys.Id = "9PGCV4V3BK4W"
 [void]$files.Add($devtoys)
 
@@ -212,13 +214,19 @@ $devtoys.Id = "9PGCV4V3BK4W"
 
 #region FONTS
  
-# FiraCode Nerd
+# FiraCode Nerd Font (font for editors)
 $firacode = [GitHubAssetFile]::new()
-$firacode.InstallationCategory = "full" 
 $firacode.Repository = "ryanoasis/nerd-fonts"
 $firacode.AssetNamePattern = "FiraCode.zip"
 $firacode.OutFile = "FiraCodeNerd-latest.zip"
 [void]$files.Add($firacode)
+
+# CodeNewRoman Nerd Font (for terminals)
+$codeNR = [GitHubAssetFile]::new()
+$codeNR.Repository = "ryanoasis/nerd-fonts"
+$codeNR.AssetNamePattern = "CodeNewRoman.zip"
+$codeNR.OutFile = "CodeNewRomanNerd-latest.zip"
+[void]$files.Add($codeNR)
 
 #endregion FONTS
 
@@ -257,4 +265,5 @@ $streamdeck.Id = "Elgato.StreamDeck"
 
 #endregion APPS
 
+# output array as json file
 $files | ConvertTo-Json | Out-File "files.json"

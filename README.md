@@ -1,6 +1,8 @@
 # Window PowerShell Install Scripts
 
-cuz i am very lazy :shrug:
+Howdy! :cowboy_hat_face:
+
+started as a script for installment cuz I'm lazy and cant be bothered to install 25 programs myself, now an universal tool.
 
 ## How to use
 
@@ -22,5 +24,5 @@ Invoke-WebRequest "https://raw.githubusercontent.com/Cethien/windows-install-scr
 ```
 
 3. :clock1: [Wait](https://www.wikihow.com/Wait-Patiently)
-4. ???
+4. :question::question::question:
 5. :birthday: Profit!

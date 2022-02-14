@@ -49,6 +49,7 @@ class WingetFile : File {
 #endregion CLASSES
 
 #region FUNCTIONS
+
 function CreateDirectory {
     param (
         [string]$Path,
@@ -89,6 +90,19 @@ function CreateShortcutStartAll {
     )
     Write-Host "Creating Shortcut '$ShortcutName' in start..." 
     return CreateShortcut -SourceFilePath $SourceFilePath -ShortcutLocation $commonStartMenuPath -FileName $ShortcutName
+}
+
+function ReloadPath {
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    Write-Host 'PATH refreshed'
+}
+
+function RunFromRaw {
+    param (
+        [string]$FileName
+    )
+
+    Invoke-WebRequest "https://raw.githubusercontent.com/cethien-windows-installation-simplifier/windows-install-scripts/main/$FileName" | Invoke-Expression
 }
 
 #endregion FUNCTIONS
