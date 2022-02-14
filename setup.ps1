@@ -1,5 +1,3 @@
-. ./common.ps1
-
 #region FUNCTIONS
 function CreateDirectory {
     param (
@@ -60,7 +58,8 @@ function CreateShortcutStartAll {
 
 #region INSTALLATION
 
-$filePath = ".\files.json"
+$json = $(Invoke-WebRequest "https://raw.githubusercontent.com/cethien-windows-installation-simplifier/windows-installation-data-manager/main/create-data.ps1" | Invoke-Expression)
+$files = $json | ConvertFrom-Json
 
 # prompt for installation options
 $title = "Hi!"
@@ -74,19 +73,16 @@ do {
 } until ($response -eq 0 -or 1)
 
 
-$files = Get-Content $filePath | ConvertFrom-Json
 
 # Write-Host "Running Installation..."
 
 foreach ($item in $files) {    
     switch ($item.Type) {
         "WebFile" {
-            $file = [WebFile]$item
-            Write-Host "Webfile URL: " $file.Url
+            Write-Host $item.Url
         }
         "WingetFile" {
-            $file = [WingetFile]$item
-            Write-Host "Winget ID: " $file.Id
+            Write-Host $item.Id
         }
     }
 }
