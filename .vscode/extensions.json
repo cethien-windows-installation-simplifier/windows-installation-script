@@ -1,6 +1,5 @@
 {
     "recommendations": [
-        "ms-vscode.powershell",
-        "insigne.powershell"
+        "ms-vscode.powershell"
     ]
 }
