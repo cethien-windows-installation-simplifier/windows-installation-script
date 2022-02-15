@@ -93,7 +93,10 @@ function WebfileInstall {
 
     $downloadFolder = "$env:USERPROFILE\Downloads"
 
-    Invoke-WebRequest $Url -OutFile $downloadFolder\$OutFile | Invoke-Item    
+
+    $file = "$downloadFolder\$OutFile"
+    Invoke-WebRequest $Url -OutFile $file
+    Invoke-Item $file
 }
 
 foreach ($item in $files) {
