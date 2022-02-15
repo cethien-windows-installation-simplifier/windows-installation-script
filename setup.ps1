@@ -1,3 +1,5 @@
+$dataRepo = "https://raw.githubusercontent.com/cethien-windows-installation-simplifier/windows-installation-data-manager/main/"
+
 #region FUNCTIONS
 function CreateDirectory {
     param (
@@ -5,14 +7,6 @@ function CreateDirectory {
         [string]$Name
     )  
     return New-Item -Path $Path -Name $Name -ItemType Directory
-}
-
-function RunFile {
-    param (
-        [string]$FileName
-    )
-
-    Invoke-WebRequest "https://raw.githubusercontent.com/cethien-windows-installation-simplifier/windows-install-scripts/main/$FileName" | Invoke-Expression
 }
 
 function ReloadPath {
@@ -58,8 +52,8 @@ function CreateShortcutStartAll {
 
 #region INSTALLATION
 
-$json = $(Invoke-WebRequest "https://raw.githubusercontent.com/cethien-windows-installation-simplifier/windows-installation-data-manager/main/create-data.ps1" | Invoke-Expression)
-$files = $json | ConvertFrom-Json
+$filejson = $(Invoke-WebRequest "$dataRepo/create-data.ps1" | Invoke-Expression)
+$files = $filejson | ConvertFrom-Json
 
 # prompt for installation options
 $title = "Hi!"
@@ -116,6 +110,8 @@ Write-Host "`nInstallation done!`n"
 
 #region CUSTOMIZATION
 
+$customizeScript = "$dataRepo/customize.ps1"
+
 # prompt for customization
 $title = "Customizting!"
 $msg = "Do you want to load you customization script?"
@@ -131,15 +127,32 @@ if ($response -eq 0) {
     ReloadPath
     
     Write-Host "`nRunning customization...`n"
-    RunFile -FileName "run-customize.ps1"
+    Invoke-WebRequest $customizeScript | Invoke-Expression   
     Write-Host "`nCustomization done!`n"
-    
-    #region Update Script
-    
-    # Create Update Script into Startup Folder
-    $content = "Invoke-WebRequest `"https://raw.githubusercontent.com/Cethien/windows-install-scripts/main/update.ps1`" | Invoke-Expression"
+}
+
+#endregion CUSTOMIZATION
+
+#region UPDATE SCRIPT
+
+# prompt for customization
+$title = "Auto Update!"
+$msg = "Do you want to put an Update script that loads on startup?"
+$options = '&Yes', '&No'
+$default = 1
+
+do {
+    $response = $Host.UI.PromptForChoice($title, $msg, $options, $default)
+} until ($response -eq 0 -or 1)
+
+if ($response -eq 0) {
+
+    # Create Update Script 
+    $content = "Invoke-WebRequest `"$dataRepo/update.ps1`" | Invoke-Expression"
     $item = "$commonStartUpPath/update.ps1"
     New-Item $item
+
+    # put file into Startup Folder
     Set-Content -Path $item -Value $content
     
     # Set Access so you dont need admin to run it
@@ -148,7 +161,6 @@ if ($response -eq 0) {
     $acl.SetAccessRule($AccessRule)
     $acl | Set-Acl $commonStartUpPath/update.ps1
 
-    #endregion Update Script
 }
 
-#endregion CUSTOMIZATION
+#endregion UPDATE SCRIPT
