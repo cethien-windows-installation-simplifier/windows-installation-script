@@ -85,6 +85,17 @@ function WingetInstall {
     $cmd | Invoke-Expression
 }
 
+function WebfileInstall {
+    param (
+        [string]$Url,
+        [string]$OutFile
+    )
+
+    $downloadFolder = "$env:USERPROFILE\Downloads"
+
+    Invoke-WebRequest $Url -OutFile $downloadFolder\$OutFile | Invoke-Item    
+}
+
 foreach ($item in $files) {
 
     switch ($response) {
@@ -95,7 +106,7 @@ foreach ($item in $files) {
     if ($cond) {        
         switch ($item.Type) {
             "WebFile" {
-                Write-Host "Todo: WEBINSTALLATION + ZIP HANDLING"
+                WebfileInstall -Url $item.Url -OutFile $item.OutFile
             }
             "WingetFile" {
                 WingetInstall -Id $item.Id -InteractiveMode $item.InteractiveMode
