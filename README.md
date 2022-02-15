@@ -2,7 +2,7 @@
 
 Howdy! :cowboy_hat_face:
 
-started as a script for installment cuz I'm lazy and cant be bothered to install 25 programs myself, now an universal tool.
+what started as a script to install 25 programs, is now an tool everybody can use (but some manual stuff has to be done first).
 
 ## How to use
 
