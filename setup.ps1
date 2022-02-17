@@ -93,9 +93,8 @@ function WebfileInstall {
 
     $downloadFolder = "$env:USERPROFILE\Downloads"
 
-
     $file = "$downloadFolder\$OutFile"
-    Invoke-WebRequest $Url -OutFile $file
+    Invoke-WebRequest -UserAgent "Wget" -Uri $Url -OutFile $file
     Invoke-Item $file
 }
 
