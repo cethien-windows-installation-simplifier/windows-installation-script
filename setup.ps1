@@ -29,7 +29,7 @@ foreach ($app in $data.apps) {
         Write-Host " from" -NoNewline
         Write-Host ""$app.download_source -ForegroundColor Yellow
         Write-Host "`r"
-        # $app.install_powershell_command | Invoke-Expression
+        $app.install_powershell_command | Invoke-Expression
     }
 }
 
