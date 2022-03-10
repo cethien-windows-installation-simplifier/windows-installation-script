@@ -21,29 +21,42 @@ Write-Host "> Installing files from profile" -NoNewline
 Write-Host ""$selectedprofile.name -ForegroundColor Green
 Write-Host "`r"
 
+$selectedApps = $(foreach ($app in $data.apps) {
+        if ($app.install_profiles -contains $selectedprofile.name) {
+            $app
+        }
+    })
+
+foreach ($app in $selectedApps) {
+    # install       
+    Write-Host ">> Installing" -NoNewline
+    # Write-Host ""$app.file_type -ForegroundColor Green -NoNewline
+    Write-Host ""$app.name -ForegroundColor Cyan -NoNewline 
+    Write-Host " from" -NoNewline
+    Write-Host ""$app.download_source -ForegroundColor Yellow
+
+    $app.powershell_command_install | Invoke-Expression      
+}
+
 if ($selectedprofile.generate_update_script) {   
     if (!(Test-Path -Path $updateFile -PathType Leaf)) {
-        New-Item $updateFile 
+        New-Item $updateFile > $null
         Write-Host "Created Update File!" -ForegroundColor Yellow
     }
     Clear-Content $updateFile
+
+    $updateApps = $(foreach ($app in $selectedApps) {
+            if ($app.do_update -eq $true) {
+                $app
+            }
+        })
+
+    foreach ($app in $updateApps) {             
+        Add-Content $updateFile $app.powershell_command_update
+        Write-Host "Added Update Command for" -NoNewline 
+        Write-Host ""$app.name -ForegroundColor Cyan
+    }        
 }
 
-foreach ($app in $data.apps) {
-    if ($app.install_profiles -contains $selectedprofile.name) {
-        # install       
-        Write-Host ">> Installing" -NoNewline
-        # Write-Host ""$app.file_type -ForegroundColor Green -NoNewline
-        Write-Host ""$app.name -ForegroundColor Cyan -NoNewline 
-        Write-Host " from" -NoNewline
-        Write-Host ""$app.download_source -ForegroundColor Yellow
-
-        $app.powershell_command_install | Invoke-Expression
-
-        if (($app.do_update) -and (Test-Path -Path $updateFile -PathType Leaf)) {                
-            Add-Content $updateFile $app.powershell_command_update
-        }        
-    }
-}
 
 Write-Host "All Done! have fun :3" -ForegroundColor Magenta
