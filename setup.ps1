@@ -59,4 +59,5 @@ if ($selectedprofile.generate_update_script) {
 }
 
 
+# logout
 Write-Host "All Done! have fun :3" -ForegroundColor Magenta
